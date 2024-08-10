@@ -60,8 +60,4 @@ print_version :: proc(logger: ^Logger, version: uint) {
 	if !logger.enabled {
 		return
 	}
-
-	// fmt.printfln(
-	//     "System can support Vulkan: %s", vk.version
-	// );
 }

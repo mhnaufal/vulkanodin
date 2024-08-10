@@ -5,17 +5,17 @@ import "core:strings"
 import glfw "vendor:glfw"
 
 Window :: struct {
-	window: ^glfw.WindowHandle,
+	window: glfw.WindowHandle,
 	logger: ^logger.Logger,
 }
 
-build_window :: proc(width: i32, height: i32, name: string, win: ^Window) -> glfw.WindowHandle {
+build_window :: proc(width: i32, height: i32, name: string, win: ^Window) {
 	glfw.Init()
 
 	glfw.WindowHint(glfw.CLIENT_API, glfw.NO_API)
 	glfw.WindowHint(glfw.RESIZABLE, glfw.FALSE)
 
-	window: glfw.WindowHandle = glfw.CreateWindow(
+	created_window: glfw.WindowHandle = glfw.CreateWindow(
 		width,
 		height,
 		strings.clone_to_cstring(name),
@@ -24,16 +24,17 @@ build_window :: proc(width: i32, height: i32, name: string, win: ^Window) -> glf
 	)
 
 	temp_level := win.logger.level
-	if window != nil {
+	if created_window != nil {
 		win.logger.level = .SUCCESS
 		logger.print_str(win.logger, "Successfully create GLFW Window")
+        glfw.MakeContextCurrent(created_window)
 	} else {
 		win.logger.level = .ERROR
-		logger.print_str(win.logger, "Successfully create GLFW Window")
+		logger.print_str(win.logger, "Failed to create GLFW Window")
+        glfw.Terminate()
+        return 
 	}
 	win.logger.level = temp_level
 
-	win.window = &window
-
-	return window
+	win.window = created_window
 }
