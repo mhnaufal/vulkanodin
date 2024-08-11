@@ -11,7 +11,7 @@ App :: struct {
 
 main_loop :: proc(app: ^App) {
 	for !glfw.WindowShouldClose(app.window.window) {
-        glfw.SwapBuffers(app.window.window)
+		glfw.SwapBuffers(app.window.window)
 		glfw.PollEvents()
 	}
 
@@ -19,6 +19,6 @@ main_loop :: proc(app: ^App) {
 }
 
 destroy_window :: proc(app: ^App) {
-    glfw.DestroyWindow(app.window.window)
-    glfw.Terminate()
+	glfw.DestroyWindow(app.window.window)
+	glfw.Terminate()
 }

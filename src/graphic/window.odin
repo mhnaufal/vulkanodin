@@ -9,7 +9,7 @@ Window :: struct {
 	logger: ^logger.Logger,
 }
 
-build_window :: proc(width: i32, height: i32, name: string, win: ^Window) {
+create_window :: proc(width: i32, height: i32, name: string, win: ^Window) -> bool {
 	glfw.Init()
 
 	glfw.WindowHint(glfw.CLIENT_API, glfw.NO_API)
@@ -23,16 +23,16 @@ build_window :: proc(width: i32, height: i32, name: string, win: ^Window) {
 		nil,
 	)
 
-	// temp_level := win.logger.level
 	if created_window != nil {
 		logger.print_str(win.logger, "Successfully create GLFW Window", logger.LogLevel.SUCCESS)
         glfw.MakeContextCurrent(created_window)
 	} else {
 		logger.print_str(win.logger, "Failed to create GLFW Window", logger.LogLevel.ERROR)
         glfw.Terminate()
-        return 
+        return false
 	}
-	// win.logger.level = temp_level
 
 	win.window = created_window
+
+	return true
 }

@@ -1,7 +1,7 @@
-package instance
+package engine
 
+import window "../graphic"
 import logger "../logger"
-import "core:fmt"
 import "core:strings"
 import glfw "vendor:glfw"
 import vk "vendor:vulkan"
@@ -11,7 +11,12 @@ Instance :: struct {
 	logger:   ^logger.Logger,
 }
 
-make_instance :: proc(instance: ^Instance, app_name: string) {
+Engine :: struct {
+	instance: ^Instance,
+	window:   ^window.Window,
+}
+
+create_instance :: proc(instance: ^Instance, app_name: string) -> bool {
 	logger.print_str(instance.logger, "Creating Vulkan instance...", logger.LogLevel.ALL)
 
 	app_info: vk.ApplicationInfo
@@ -41,10 +46,30 @@ make_instance :: proc(instance: ^Instance, app_name: string) {
 	p := vk.CreateInstance(&instance_info, nil, &instance.instance)
 
 	if p != .SUCCESS {
-		logger.print_str(instance.logger, "Failed to create Vulkan Instance", logger.LogLevel.ERROR)
-		return
+		logger.print_str(
+			instance.logger,
+			"Failed to create Vulkan Instance",
+			logger.LogLevel.ERROR,
+		)
+		return false
 	}
 
-	logger.print_str(instance.logger, "Vulkan instance created", logger.LogLevel.ERROR)
+	logger.print_str(instance.logger, "Vulkan instance created", logger.LogLevel.SUCCESS)
 	vk.load_proc_addresses(get_proc_address)
+
+	return true
+}
+
+destroy_vulkan :: proc(engine: ^Engine) {
+	vk.DestroyInstance(engine.instance.instance, nil)
+}
+
+create_engine :: proc(instance: ^Instance, window: ^window.Window) -> Engine {
+	assert(create_instance(instance, "VulkanOdin") == true)
+
+	e: Engine
+	e.instance = instance
+	e.window = window
+
+	return e
 }

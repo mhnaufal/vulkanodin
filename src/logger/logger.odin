@@ -16,7 +16,7 @@ Logger :: struct {
 	level:   LogLevel,
 }
 
-init :: proc(mode: bool, log_level: LogLevel) -> Logger {
+create_logger :: proc(mode: bool, log_level: LogLevel) -> Logger {
 	l := Logger{mode, log_level}
 	return l
 }
