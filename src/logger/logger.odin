@@ -60,6 +60,17 @@ print_str :: proc(logger: ^Logger, message: string, log_level: LogLevel = nil) {
 	}
 }
 
+print_array :: proc(logger: ^Logger, messages: []$T, msg_size: u32 = 0, log_level: LogLevel = nil) {
+	if !logger.enabled {
+		return
+	}
+
+	// a := messages[:]
+	for i in messages[0:msg_size] {
+		print_str(logger, string(i), log_level)
+	}
+}
+
 print_version :: proc(logger: ^Logger, version: uint = 1) {
 	if !logger.enabled {
 		return

@@ -19,6 +19,9 @@ Engine :: struct {
 create_instance :: proc(instance: ^Instance, app_name: string) -> bool {
 	logger.print_str(instance.logger, "Creating Vulkan instance...", logger.LogLevel.ALL)
 
+	/*
+	* App Info
+	*/
 	app_info: vk.ApplicationInfo
 	app_info.sType = .APPLICATION_INFO
 	app_info.pApplicationName = strings.clone_to_cstring(app_name)
@@ -28,12 +31,37 @@ create_instance :: proc(instance: ^Instance, app_name: string) -> bool {
 	app_info.apiVersion = vk.API_VERSION_1_0
 	app_info.pNext = nil
 
+	/*
+	* Extensions (for debugging and error checking)
+	*/
+	glfw_ext := glfw.GetRequiredInstanceExtensions()
+	glfw_enabled_ext_count := cast(u32)len(glfw_ext)
+	if logger.is_enabled(instance.logger) {
+		glfw_enabled_ext_count += 1
+	}
+
+	glfw_enabled_ext_name := make([]cstring, glfw_enabled_ext_count)
+	for i in 0 ..< glfw_enabled_ext_count - 1 {
+		glfw_enabled_ext_name[i] = glfw_ext[i]
+	}
+	if logger.is_enabled(instance.logger) {
+		glfw_enabled_ext_name[glfw_enabled_ext_count - 1] = vk.EXT_DEBUG_UTILS_EXTENSION_NAME
+	}
+	logger.print_array(instance.logger, glfw_enabled_ext_name, glfw_enabled_ext_count, .DEBUG)
+
+	/*
+	* Validation Layers
+	*/
+
+
+	/*
+	* Instance Info
+	*/
 	instance_info: vk.InstanceCreateInfo
 	instance_info.sType = .INSTANCE_CREATE_INFO
 	instance_info.pApplicationInfo = &app_info
-	glfw_ext := glfw.GetRequiredInstanceExtensions()
-	instance_info.ppEnabledExtensionNames = raw_data(glfw_ext)
-	instance_info.enabledExtensionCount = cast(u32)len(glfw_ext)
+	instance_info.ppEnabledExtensionNames = raw_data(glfw_enabled_ext_name)
+	instance_info.enabledExtensionCount = glfw_enabled_ext_count
 	instance_info.enabledLayerCount = 0
 	instance_info.pNext = nil
 
