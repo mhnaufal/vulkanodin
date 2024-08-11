@@ -15,8 +15,7 @@ main_loop :: proc(app: ^App) {
 		glfw.PollEvents()
 	}
 
-	app.logger.level = .ALL
-	logger.print_str(app.logger, "Window CLosed")
+	logger.print_str(app.logger, "Window CLosed", logger.LogLevel.ALL)
 }
 
 destroy_window :: proc(app: ^App) {

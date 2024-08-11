@@ -23,18 +23,16 @@ build_window :: proc(width: i32, height: i32, name: string, win: ^Window) {
 		nil,
 	)
 
-	temp_level := win.logger.level
+	// temp_level := win.logger.level
 	if created_window != nil {
-		win.logger.level = .SUCCESS
-		logger.print_str(win.logger, "Successfully create GLFW Window")
+		logger.print_str(win.logger, "Successfully create GLFW Window", logger.LogLevel.SUCCESS)
         glfw.MakeContextCurrent(created_window)
 	} else {
-		win.logger.level = .ERROR
-		logger.print_str(win.logger, "Failed to create GLFW Window")
+		logger.print_str(win.logger, "Failed to create GLFW Window", logger.LogLevel.ERROR)
         glfw.Terminate()
         return 
 	}
-	win.logger.level = temp_level
+	// win.logger.level = temp_level
 
 	win.window = created_window
 }

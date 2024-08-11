@@ -12,8 +12,7 @@ Instance :: struct {
 }
 
 make_instance :: proc(instance: ^Instance, app_name: string) {
-	instance.logger.level = .ALL
-	logger.print_str(instance.logger, "Creating Vulkan instance...")
+	logger.print_str(instance.logger, "Creating Vulkan instance...", logger.LogLevel.ALL)
 
 	app_info: vk.ApplicationInfo
 	app_info.sType = .APPLICATION_INFO
@@ -42,12 +41,10 @@ make_instance :: proc(instance: ^Instance, app_name: string) {
 	p := vk.CreateInstance(&instance_info, nil, &instance.instance)
 
 	if p != .SUCCESS {
-		instance.logger.level = .ERROR
-		logger.print_str(instance.logger, "Failed to create Vulkan Instance")
+		logger.print_str(instance.logger, "Failed to create Vulkan Instance", logger.LogLevel.ERROR)
 		return
 	}
 
-	instance.logger.level = .SUCCESS
-	logger.print_str(instance.logger, "Vulkan instance created")
+	logger.print_str(instance.logger, "Vulkan instance created", logger.LogLevel.ERROR)
 	vk.load_proc_addresses(get_proc_address)
 }

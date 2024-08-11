@@ -4,7 +4,7 @@ import "core:fmt"
 import vk "vendor:vulkan"
 
 LogLevel :: enum {
-	ALL = 0,
+	ALL = 1, // 0 == nil
 	DEBUG,
 	SUCCESS,
 	WARNING,
@@ -17,7 +17,7 @@ Logger :: struct {
 }
 
 init :: proc(mode: bool, log_level: LogLevel) -> Logger {
-	l := Logger{true, log_level}
+	l := Logger{mode, log_level}
 	return l
 }
 
@@ -30,7 +30,7 @@ set_mode :: proc(logger: ^Logger, mode: bool, log_level: LogLevel) {
 	logger.level = log_level
 }
 
-print_str :: proc(logger: ^Logger, message: string) {
+print_str :: proc(logger: ^Logger, message: string, log_level: LogLevel = nil) {
 	if !logger.enabled {
 		return
 	}
@@ -40,6 +40,10 @@ print_str :: proc(logger: ^Logger, message: string) {
 	green :: "\033[0;32m"
 	blue :: "\033[0;34m"
 	gray :: "\033[1;30m"
+
+	if log_level != nil && logger.level != log_level {
+		logger.level = log_level
+	}
 
 	if logger.level == .ALL {
 		fmt.printfln("%s %s", gray, message)
@@ -56,7 +60,7 @@ print_str :: proc(logger: ^Logger, message: string) {
 	}
 }
 
-print_version :: proc(logger: ^Logger, version: uint) {
+print_version :: proc(logger: ^Logger, version: uint = 1) {
 	if !logger.enabled {
 		return
 	}
